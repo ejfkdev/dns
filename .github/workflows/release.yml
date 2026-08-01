@@ -51,8 +51,10 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == refs/tags/* ]]; then
             VERSION="${GITHUB_REF#refs/tags/}"
+            # 去掉 v 前缀（v0.1.0 → 0.1.0），Cargo.toml version 不能有 v
+            VERSION="${VERSION#v}"
           else
-            VERSION="dev-$(date +%Y%m%d)"
+            VERSION="0.1.0"
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           sed -i.bak "s/^version = \".*\"/version = \"$VERSION\"/" Cargo.toml
@@ -163,7 +165,7 @@ jobs:
           if [[ "${{ github.ref }}" == refs/tags/* ]]; then
             VERSION="${GITHUB_REF#refs/tags/}"
           else
-            VERSION="dev-$(date +%Y%m%d)"
+            VERSION="dev"
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
