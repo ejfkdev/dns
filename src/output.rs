@@ -187,9 +187,15 @@ fn collect_merged(results: &[QueryResult]) -> Vec<(String, Vec<MergedEntry>)> {
 
 fn render_merged_short(out: &mut String, results: &[QueryResult]) {
     let merged = collect_merged(results);
+    let single_type = merged.len() == 1;
     for (type_name, entries) in &merged {
         for e in entries {
-            out.push_str(&format!("{} {}\n", type_name, e.value));
+            if single_type {
+                out.push_str(&e.value);
+            } else {
+                out.push_str(&format!("{type_name} {}", e.value));
+            }
+            out.push('\n');
         }
     }
 }
@@ -370,13 +376,25 @@ fn csv_escape(s: &str) -> String {
 fn render_short(out: &mut String, result: &QueryResult) {
     // 多域名时用域名注释分隔
     out.push_str(&format!("# {}\n", result.domain));
+    // 统计有结果的类型数，决定是否加前缀
+    let visible_types: Vec<_> = result
+        .results
+        .iter()
+        .filter(|tr| !should_hide(tr, result.hide_empty))
+        .collect();
+    let single_type = visible_types.len() <= 1;
     for tr in &result.results {
         if should_hide(tr, result.hide_empty) {
             continue;
         }
         let (entries, _, _) = aggregate(tr);
+        let type_name = tr.record_type.to_string();
         for e in &entries {
-            out.push_str(&e.value);
+            if single_type {
+                out.push_str(&e.value);
+            } else {
+                out.push_str(&format!("{type_name} {}", e.value));
+            }
             out.push('\n');
         }
     }
