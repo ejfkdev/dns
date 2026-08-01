@@ -135,15 +135,8 @@ fn should_hide(type_result: &TypeResult, hide_empty: bool) -> bool {
     if !hide_empty {
         return false;
     }
-    // 如果有服务器返回了非 NoError 的状态码（如 NXDOMAIN/SERVFAIL），不隐藏
-    let has_error_status = type_result.server_results.iter().any(|sr| {
-        !sr.response_code.is_empty()
-            && !sr.response_code.contains("NOERROR")
-            && !sr.response_code.contains("NOERROR")
-    });
-    if has_error_status {
-        return false;
-    }
+    // 无记录或全出错 → 隐藏（包括单类型返回 NXDOMAIN 的情况，
+    // 这表示该类型无记录而非域名不存在；真正的域名不存在由 all_nxdomain 检查处理）
     type_result
         .server_results
         .iter()
@@ -533,10 +526,7 @@ fn render_tty(out: &mut String, result: &QueryResult, opts: &OutputOpts) {
         if entries.is_empty() {
             // 检查是否有状态码（NXDOMAIN/SERVFAIL 等）
             let rcode = tr.server_results.iter().find_map(|sr| {
-                if !sr.response_code.is_empty()
-                    && !sr.response_code.contains("NOERROR")
-                    && !sr.response_code.contains("NOERROR")
-                {
+                if !sr.response_code.is_empty() && !sr.response_code.contains("NOERROR") {
                     Some(sr.response_code.clone())
                 } else {
                     None
