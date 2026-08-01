@@ -6,7 +6,7 @@ v0.1.0 — 向多个 DNS 服务器并发查询所有记录类型并汇总的命�
 
 仓库：https://github.com/ejfkdev/dns
 
-![dns screenshot](dns.jpg)
+![dns screenshot](https://raw.githubusercontent.com/ejfkdev/dns/main/dns.jpg)
 
 与 `dig`、`dog` 等工具不同，`dns` **默认向所有内置 DNS 服务器 + 本机 DNS 并发查询所有记录类型**，汇总去重后展示——可直观看出不同服务器返回结果的差异（DNS 分流、地理差异、污染等）。
 

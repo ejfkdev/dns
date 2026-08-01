@@ -6,7 +6,7 @@ A command-line DNS tool that queries all record types from multiple servers conc
 
 Repo: https://github.com/ejfkdev/dns
 
-![dns screenshot](dns.jpg)
+![dns screenshot](https://raw.githubusercontent.com/ejfkdev/dns/main/dns.jpg)
 
 Unlike `dig` or `dog`, `dns` **queries all built-in DNS servers + local DNS concurrently for all record types by default**, deduplicates and displays results — making it easy to spot differences across servers (DNS splitting, geo-routing, pollution, etc.).
 
