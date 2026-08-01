@@ -139,10 +139,36 @@ A
 
 ## 安装
 
+### Homebrew（macOS）
+
 ```sh
-cargo build --release
-cp target/release/dns ~/.local/bin/   # 或加入 PATH 的任意目录
+brew install ejfkdev/tap/dns
 ```
+
+### Cargo 编译安装
+
+```sh
+cargo install dns
+# 或从源码编译
+git clone https://github.com/ejfkdev/dns.git
+cd dns
+cargo build --release
+cp target/release/dns ~/.local/bin/
+```
+
+### 下载预编译二进制
+
+从 [Releases](https://github.com/ejfkdev/dns/releases) 下载对应平台的二进制，放入 PATH 即可。
+
+| 平台 | 文件 |
+|------|------|
+| Linux x86_64 | `dns-v*-x86_64-unknown-linux-gnu` |
+| Linux arm64 | `dns-v*-aarch64-unknown-linux-gnu` |
+| macOS x86_64 | `dns-v*-x86_64-apple-darwin` |
+| macOS arm64 (Apple Silicon) | `dns-v*-aarch64-apple-darwin` |
+| Windows x86_64 | `dns-v*-x86_64-pc-windows-msvc.exe` |
+
+二进制已 strip 符号 + UPX 压缩，体积最小化。
 
 ## 常用命令
 

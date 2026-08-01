@@ -139,10 +139,36 @@ A
 
 ## Install
 
+### Homebrew (macOS)
+
 ```sh
-cargo build --release
-cp target/release/dns ~/.local/bin/   # or any PATH directory
+brew install ejfkdev/tap/dns
 ```
+
+### Cargo install
+
+```sh
+cargo install dns
+# or build from source
+git clone https://github.com/ejfkdev/dns.git
+cd dns
+cargo build --release
+cp target/release/dns ~/.local/bin/
+```
+
+### Download pre-built binary
+
+Download from [Releases](https://github.com/ejfkdev/dns/releases) for your platform and add to PATH.
+
+| Platform | File |
+|----------|------|
+| Linux x86_64 | `dns-v*-x86_64-unknown-linux-gnu` |
+| Linux arm64 | `dns-v*-aarch64-unknown-linux-gnu` |
+| macOS x86_64 | `dns-v*-x86_64-apple-darwin` |
+| macOS arm64 (Apple Silicon) | `dns-v*-aarch64-apple-darwin` |
+| Windows x86_64 | `dns-v*-x86_64-pc-windows-msvc.exe` |
+
+Binaries are stripped + UPX compressed for minimal size.
 
 ## Common Commands
 
