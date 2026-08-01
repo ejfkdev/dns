@@ -60,6 +60,9 @@ fn main() -> Result<()> {
     };
     let verbose = args.verbose || cfg.verbose.unwrap_or(false);
     let ttl = args.ttl || cfg.ttl.unwrap_or(false);
+    // -m 等价于 --merge --short
+    let merge = args.merge;
+    let short = args.short || merge;
 
     // @server 语法：从位置参数提取，合并到 server_list
     server_list.extend(cli::extract_at_server(&args.args));
@@ -204,7 +207,7 @@ fn main() -> Result<()> {
                 json: args.json,
                 verbose,
                 ttl,
-                short: args.short,
+                short: short,
                 color: args.color,
                 yaml: args.yaml,
                 csv: args.csv,
@@ -218,7 +221,7 @@ fn main() -> Result<()> {
     let multi = targets.len() > 1;
 
     // --merge 模式：合并多域名的同类型记录
-    if multi && args.merge {
+    if multi && merge {
         let mut all_results = Vec::new();
         for target in &targets {
             let result = rt.block_on(resolver::query_all(
@@ -240,7 +243,7 @@ fn main() -> Result<()> {
             csv: args.csv,
             verbose,
             ttl,
-            short: args.short,
+            short: short,
             color: args.color,
         };
         output::print_merged(&all_results, &opts);
@@ -267,12 +270,12 @@ fn main() -> Result<()> {
             csv: args.csv,
             verbose,
             ttl,
-            short: args.short,
+            short: short,
             color: args.color,
         };
 
         // 多域名时加明显分隔（CSV/JSON/YAML/short 不加，保持纯数据）
-        if multi && !args.json && !args.yaml && !args.short && !args.csv {
+        if multi && !args.json && !args.yaml && !short && !args.csv {
             let use_color = match args.color {
                 cli::ColorMode::Always => true,
                 cli::ColorMode::Never => false,

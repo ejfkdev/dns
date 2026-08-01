@@ -65,6 +65,10 @@ pub struct Args {
     #[arg(long)]
     pub short: bool,
 
+    /// 合并 + 极简（等价于 --merge --short，便于管道使用）
+    #[arg(short = 'm', long)]
+    pub merge: bool,
+
     /// JSON 输出
     #[arg(long)]
     pub json: bool,
@@ -76,10 +80,6 @@ pub struct Args {
     /// CSV 输出
     #[arg(long)]
     pub csv: bool,
-
-    /// 合并多域名结果：同类型记录合并展示，标注来源域名
-    #[arg(long)]
-    pub merge: bool,
 
     /// 详细：服务器、耗时、一致数、authority/additional 段
     #[arg(short, long)]
