@@ -1,0 +1,42 @@
+[package]
+name = "dns"
+version = "0.1.0"
+edition = "2024"
+description = "Multi-server DNS query tool (concurrent, all record types, DoT/DoH/DoQ/HTTPDNS)"
+license = "MIT"
+repository = "https://github.com/ejfkdev/dns"
+
+[[bin]]
+name = "dns"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+colored = "3"
+dirs = "6"
+futures = { version = "0.3", features = ["futures-executor"] }
+hickory-net = { version = "0.26", features = ["dnssec-ring"] }
+hickory-proto = { version = "0.26", features = ["dnssec-ring"] }
+hickory-resolver = { version = "0.26", features = ["tokio", "dnssec-ring", "tls-ring", "https-ring", "webpki-roots", "quic-ring"] }
+idna = "1"
+reqwest = { version = "0.13", default-features = false, features = ["http2", "json", "rustls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+toml = "1"
+
+# dev profile: 快速编译（跳过优化、单 codegen-unit、增量编译）
+[profile.dev]
+opt-level = 0
+codegen-units = 256
+debug = false          # 不生成 debug 信息（减少编译时间）
+incremental = true
+
+# release profile: 最小体积
+[profile.release]
+opt-level = "z"         # 最小体积优化
+lto = true              # 链接时优化
+codegen-units = 1       # 单 codegen-unit（更好优化，更慢编译）
+strip = true            # 去除符号
+panic = "abort"         # 减小 unwind 代码

@@ -1,0 +1,35 @@
+# Rust
+/target
+**/*.rs.bk
+*.rlib
+*.o
+*.a
+*.so
+
+# Cargo local config (per-developer, not shared)
+/.cargo/config.toml
+
+# Cargo lock (binary project, keep it)
+# Cargo.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Linux
+*~
+.directory
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+.zcode/
