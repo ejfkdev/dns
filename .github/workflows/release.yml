@@ -27,8 +27,8 @@ jobs:
             runner: ubuntu-latest
             cross: true
           - target: x86_64-apple-darwin
-            runner: macos-13
-            cross: false
+            runner: macos-14
+            cross: true
           - target: aarch64-apple-darwin
             runner: macos-14
             cross: false
@@ -67,18 +67,27 @@ jobs:
           key: ${{ matrix.target }}
 
       - name: Install cross-compilation toolchain (Linux arm64)
-        if: matrix.cross
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
         run: |
           sudo apt-get update
           sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 
       - name: Set cross-compilation env (Linux arm64)
-        if: matrix.cross
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
         run: |
           echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
           echo "CC_aarch64_unknown_linux_gnu=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
           echo "CXX_aarch64_unknown_linux_gnu=aarch64-linux-gnu-g++" >> $GITHUB_ENV
           echo "AR_aarch64_unknown_linux_gnu=aarch64-linux-gnu-ar" >> $GITHUB_ENV
+
+      - name: Set cross-compilation env (macOS x86_64)
+        if: matrix.target == 'x86_64-apple-darwin'
+        run: |
+          echo "CARGO_TARGET_X86_64_APPLE_DARWIN_LINKER=clang" >> $GITHUB_ENV
+          echo "CC_x86_64_apple_darwin=clang" >> $GITHUB_ENV
+          echo "CXX_x86_64_apple_darwin=clang++" >> $GITHUB_ENV
+          echo "CFLAGS_x86_64_apple_darwin=-target x86_64-apple-darwin" >> $GITHUB_ENV
+          echo "CXXFLAGS_x86_64_apple_darwin=-target x86_64-apple-darwin" >> $GITHUB_ENV
 
       - name: Install UPX (Linux)
         if: runner.os == 'Linux'
@@ -100,7 +109,7 @@ jobs:
         shell: bash
         run: |
           BIN="target/${{ matrix.target }}/release/dns"
-          if [[ "$RUNNER_OS" == "Linux" ]] && [[ "${{ matrix.cross }}" == "true" ]]; then
+          if [[ "${{ matrix.target }}" == "aarch64-unknown-linux-gnu" ]]; then
             aarch64-linux-gnu-strip "$BIN" || strip "$BIN"
           else
             strip "$BIN"
