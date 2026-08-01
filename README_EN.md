@@ -321,11 +321,11 @@ From [Releases](https://github.com/ejfkdev/dns/releases):
 
 | Platform | File |
 |----------|------|
-| Linux x86_64 | `dns-v*-x86_64-unknown-linux-gnu.tar.gz` |
-| Linux arm64 | `dns-v*-aarch64-unknown-linux-gnu.tar.gz` |
-| macOS x86_64 | `dns-v*-x86_64-apple-darwin.tar.gz` |
-| macOS arm64 (Apple Silicon) | `dns-v*-aarch64-apple-darwin.tar.gz` |
-| Windows x86_64 | `dns-v*-x86_64-pc-windows-msvc.zip` |
+| Linux x86_64 | `dns-v*-x86_64-unknown-linux-gnu` |
+| Linux arm64 | `dns-v*-aarch64-unknown-linux-gnu` |
+| macOS x86_64 | `dns-v*-x86_64-apple-darwin` |
+| macOS arm64 (Apple Silicon) | `dns-v*-aarch64-apple-darwin` |
+| Windows x86_64 | `dns-v*-x86_64-pc-windows-msvc.exe` |
 
 Binaries are stripped + UPX compressed for minimal size.
 

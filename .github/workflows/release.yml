@@ -22,23 +22,18 @@ jobs:
         include:
           - target: x86_64-unknown-linux-gnu
             runner: ubuntu-latest
-            archive: tar.gz
             cross: false
           - target: aarch64-unknown-linux-gnu
             runner: ubuntu-latest
-            archive: tar.gz
             cross: true
           - target: x86_64-apple-darwin
             runner: macos-13
-            archive: tar.gz
             cross: false
           - target: aarch64-apple-darwin
             runner: macos-14
-            archive: tar.gz
             cross: false
           - target: x86_64-pc-windows-msvc
             runner: windows-latest
-            archive: zip
             cross: false
 
     steps:
@@ -101,7 +96,7 @@ jobs:
         run: cargo build --release --target ${{ matrix.target }}
 
       - name: Strip symbols (Linux/macOS)
-        if: matrix.archive == 'tar.gz'
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           BIN="target/${{ matrix.target }}/release/dns"
@@ -120,30 +115,19 @@ jobs:
           fi
           upx --best --lzma "$BIN" 2>&1 || echo "UPX compression skipped (unsupported binary or platform)"
 
-      - name: Package (tar.gz)
-        if: matrix.archive == 'tar.gz'
+      - name: Rename binary
         shell: bash
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           TARGET="${{ matrix.target }}"
-          ARCHIVE="dns-${VERSION}-${TARGET}.tar.gz"
-          mkdir -p dist
-          cp target/${TARGET}/release/dns dist/
-          cp README.md dist/ 2>/dev/null || true
-          tar czf "$ARCHIVE" -C dist .
-          echo "ARCHIVE=$ARCHIVE" >> $GITHUB_ENV
-
-      - name: Package (zip)
-        if: matrix.archive == 'zip'
-        shell: bash
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          TARGET="${{ matrix.target }}"
-          ARCHIVE="dns-${VERSION}-${TARGET}.zip"
-          mkdir -p dist
-          cp target/${TARGET}/release/dns.exe dist/
-          cp README.md dist/ 2>/dev/null || true
-          cd dist && zip -r "../$ARCHIVE" . && cd ..
+          BIN="target/${TARGET}/release/dns"
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            BIN="target/${TARGET}/release/dns.exe"
+            ARCHIVE="dns-${VERSION}-${TARGET}.exe"
+          else
+            ARCHIVE="dns-${VERSION}-${TARGET}"
+          fi
+          cp "$BIN" "$ARCHIVE"
           echo "ARCHIVE=$ARCHIVE" >> $GITHUB_ENV
 
       - name: Upload artifact
