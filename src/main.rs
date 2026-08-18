@@ -26,8 +26,8 @@ fn main() -> Result<()> {
     // 拦截 -h/--help：显示中英文双语帮助（含示例）
     help::check_help(&raw_args);
 
-    // 无参数直接运行 dns → 显示帮助
-    if raw_args.len() <= 1 {
+    // 无参数且无管道输入 → 显示帮助
+    if raw_args.len() <= 1 && std::io::stdin().is_terminal() {
         if help::is_chinese() {
             help::print_zh();
         } else {
