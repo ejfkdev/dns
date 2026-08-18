@@ -348,7 +348,7 @@ dependencies = [
 
 [[package]]
 name = "dns"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "anyhow",
  "clap",
@@ -364,6 +364,7 @@ dependencies = [
  "serde_json",
  "tokio",
  "toml",
+ "url",
 ]
 
 [[package]]

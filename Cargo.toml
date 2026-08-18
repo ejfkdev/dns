@@ -25,6 +25,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 toml = "1"
+url = "2.5.8"
 
 # dev profile: 快速编译（跳过优化、单 codegen-unit、增量编译）
 [profile.dev]

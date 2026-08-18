@@ -234,6 +234,9 @@ fn build_target(
     // AXFR 标记
     let is_axfr = types.contains(&hickory_proto::rr::RecordType::AXFR);
 
+    // 从 URL / 邮箱等格式中提取域名
+    let trimmed = extract_domain(trimmed);
+
     // IP 反查
     if let Ok(ip) = trimmed.parse::<IpAddr>() {
         return Ok(QueryTarget {
@@ -247,11 +250,11 @@ fn build_target(
     }
 
     // IDN Punycode 转码
-    let (domain, display_domain) = if is_ascii(trimmed) {
-        (trimmed.to_string(), trimmed.to_string())
+    let (domain, display_domain) = if is_ascii(&trimmed) {
+        (trimmed.clone(), trimmed.clone())
     } else {
-        let ascii = idna::domain_to_ascii(trimmed).unwrap_or_else(|_| trimmed.to_string());
-        (ascii, trimmed.to_string())
+        let ascii = idna::domain_to_ascii(&trimmed).unwrap_or_else(|_| trimmed.clone());
+        (ascii, trimmed.clone())
     };
 
     if !domain.contains('.') && !domain.contains(':') {
@@ -268,6 +271,61 @@ fn build_target(
         is_ptr: false,
         is_axfr,
     })
+}
+
+/// 从 URL / 邮箱等格式中提取域名。
+///
+/// 使用 url crate 解析，支持：
+/// - http://xxx.com → xxx.com
+/// - https://admin@test.com/aaa?xx=1 → test.com
+/// - https://user:pass@host.com:8080/path → host.com
+/// - mailto:xx@test.com → test.com
+/// - 普通域名 example.com → example.com（不变）
+fn extract_domain(input: &str) -> String {
+    let input = input.trim();
+
+    // mailto: 特殊处理（url crate 不解析 mailto 的 host）
+    if input.starts_with("mailto:") {
+        let rest = &input[7..];
+        if let Some(idx) = rest.rfind('@') {
+            return rest[idx + 1..]
+                .split('?')
+                .next()
+                .unwrap_or(rest)
+                .trim()
+                .to_string();
+        }
+        return input.to_string();
+    }
+
+    // 尝试用 url crate 解析
+    if let Ok(url) = url::Url::parse(input) {
+        if let Some(host) = url.host_str() {
+            return host.to_string();
+        }
+    }
+
+    // url crate 无法解析（无 scheme），尝试加 https:// 再解析
+    if input.contains("://") || input.starts_with("//") {
+        // 有 scheme 但解析失败，返回原值
+        return input.to_string();
+    }
+
+    // 纯邮箱 xx@test.com → 取 @ 后面
+    if let Some(idx) = input.rfind('@') {
+        let domain = &input[idx + 1..];
+        if domain.contains('.') {
+            return domain
+                .split('?')
+                .next()
+                .unwrap_or(domain)
+                .trim()
+                .to_string();
+        }
+    }
+
+    // 普通输入，不变
+    input.to_string()
 }
 
 /// 判断字符串是否全 ASCII。
