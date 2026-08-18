@@ -148,7 +148,7 @@ brew install ejfkdev/tap/dns
 ### Cargo install
 
 ```sh
-cargo install dns
+cargo install --git https://github.com/ejfkdev/dns.git
 # or build from source
 git clone https://github.com/ejfkdev/dns.git
 cd dns
