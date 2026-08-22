@@ -36,9 +36,14 @@ pub fn is_chinese() -> bool {
 }
 
 /// 如果参数含 -h 或 --help，打印帮助并退出。
+/// 但跳过 serve/mcp 开头的参数（由 xyz-rust 处理自己的 help）。
 pub fn check_help(args: &[String]) {
     let has_help = args.iter().any(|a| a == "-h" || a == "--help");
     if !has_help {
+        return;
+    }
+    // serve/mcp 的 help 由 xyz-rust 处理
+    if args.iter().take(2).any(|a| a == "serve" || a == "mcp") {
         return;
     }
     if is_chinese() {
@@ -114,6 +119,11 @@ pub fn print_zh() {
         ("cat domains.txt | dns A --merge", "从管道读取域名 + 合并"),
         ("cat domains.txt | dns --csv", "从管道读取域名 + CSV 输出"),
         ("cat domains.txt | dns --json", "从管道读取域名 + JSON 输出"),
+        (
+            "dns serve --xyz.addr 127.0.0.1:8080",
+            "HTTP REST API + OpenAPI",
+        ),
+        ("dns mcp stdio", "MCP 工具服务器（AI 客户端可调用）"),
     ];
     let max = cmds
         .iter()
@@ -268,6 +278,11 @@ pub fn print_en() {
             "cat domains.txt | dns --json",
             "Read domains from pipe + JSON output",
         ),
+        (
+            "dns serve --xyz.addr 127.0.0.1:8080",
+            "HTTP REST API + OpenAPI",
+        ),
+        ("dns mcp stdio", "MCP tool server (for AI clients)"),
     ];
     let max = cmds
         .iter()
