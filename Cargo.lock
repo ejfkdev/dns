@@ -2764,8 +2764,8 @@ checksum = "1ffae5123b2d3fc086436f8834ae3ab053a283cfac8fe0a0b8eaae044768a4c4"
 
 [[package]]
 name = "xyz-rust"
-version = "0.3.0"
-source = "git+https://github.com/ejfkdev/xyz-rust.git#f7dc9be408f49430b6d41230ae3a4d4639ebf3c1"
+version = "0.3.1"
+source = "git+https://github.com/ejfkdev/xyz-rust.git#d2c8ad96bd55dc80c9d115843642b6fd133ac6c5"
 dependencies = [
  "axum",
  "axum-server",
@@ -2785,8 +2785,8 @@ dependencies = [
 
 [[package]]
 name = "xyz-rust-macros"
-version = "0.3.0"
-source = "git+https://github.com/ejfkdev/xyz-rust.git#f7dc9be408f49430b6d41230ae3a4d4639ebf3c1"
+version = "0.3.1"
+source = "git+https://github.com/ejfkdev/xyz-rust.git#d2c8ad96bd55dc80c9d115843642b6fd133ac6c5"
 dependencies = [
  "proc-macro2",
  "quote",
