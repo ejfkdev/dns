@@ -8,6 +8,7 @@ mod output;
 mod record_types;
 mod resolver;
 mod servers;
+mod xyz;
 
 use std::net::IpAddr;
 
@@ -25,6 +26,12 @@ fn main() -> Result<()> {
 
     // 拦截 -h/--help：显示中英文双语帮助（含示例）
     help::check_help(&raw_args);
+
+    // 拦截 serve/mcp 模式 → 走 xyz-rust 的 HTTP/MCP 接口
+    let cli_args: Vec<String> = raw_args[1..].to_vec();
+    if xyz::try_xyz_dispatch(&cli_args) {
+        return Ok(());
+    }
 
     // 无参数且无管道输入 → 显示帮助
     if raw_args.len() <= 1 && std::io::stdin().is_terminal() {
