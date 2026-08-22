@@ -64,6 +64,7 @@ pub fn try_xyz_dispatch(args: &[String]) -> bool {
                 .mcp(MCPHints { annotations: vec!["read".into(), "title:DNS AXFR".into()], ..Default::default() }),
         ])
         .run();
+    #[allow(unreachable_code)]
     true
 }
 
